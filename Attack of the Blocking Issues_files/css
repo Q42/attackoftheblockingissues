@@ -1,0 +1,18 @@
+@font-face {
+  font-family: 'Monofett';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Monofett'), url('http://themes.googleusercontent.com/static/fonts/monofett/v3/94n9d8-lEEaOz-Sn4plHGHYhjbSpvc47ee6xR_80Hnw.woff') format('woff');
+}
+@font-face {
+  font-family: 'Megrim';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Megrim'), url('http://themes.googleusercontent.com/static/fonts/megrim/v4/DO-J3fN7tP-bKfriFzSkEOvvDin1pK8aKteLpeZ5c0A.woff') format('woff');
+}
+@font-face {
+  font-family: 'VT323';
+  font-style: normal;
+  font-weight: normal;
+  src: local('VT323'), url('http://themes.googleusercontent.com/static/fonts/vt323/v3/SSPdB6sO_7a9ZMMiCroIGqCWcynf_cDxXwCLxiixG1c.woff') format('woff');
+}

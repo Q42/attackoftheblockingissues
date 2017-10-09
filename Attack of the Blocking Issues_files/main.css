@@ -1,0 +1,87 @@
+@-webkit-keyframes fade {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+}
+@-webkit-keyframes fall {
+   	from {-webkit-transform: translate3d(0, -1000px, 0) rotate(90deg);}
+	to 	{-webkit-transform: translate3d(0, 1500px, 0) rotate(90deg);}
+}
+@-webkit-keyframes surf {
+	from { -webkit-transform: rotateX(90deg); }
+	to { -webkit-transform: rotateX(80deg); }
+}
+@-webkit-keyframes flash {
+	from { background-color: #900; }
+	to { background-color: #000; }
+}
+@-webkit-keyframes fade-out {
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+@-webkit-keyframes blink {
+	0% { display: inline; }
+	100% { display: none;}
+}
+@-webkit-keyframes flicker {
+	from { background-position: 0 0; }
+	to { background-position: bottom left; }
+}
+
+iframe {
+	border: none;
+}
+
+#game {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	height: 700px; width: 960px;
+	z-index: 99;
+	-webkit-perspective: 300;
+	-moz-perspective: 300;
+}
+#canvas {
+	display: none;
+	margin: 0 auto;
+	width: 320px;
+	height: 480px;
+}
+
+#canvas {
+	-webkit-transform: rotateX(40deg);
+	-moz-transform: rotateX(40deg);
+	-webkit-transition: -webkit-transform ease-in-out 2s;
+	-moz-transition: -moz-transform ease-in-out 2s;
+}
+
+#hud
+{
+	position: fixed;
+	top: 100px; left: 0;
+	width: 100%;
+	z-index: 4;
+}
+
+#score, #health {
+	font: 24px metalista-web, Consolas, Menlo, Monaco, "Courier New", monospace;
+	color: #cfc;
+	position: absolute;
+}
+#score-display, #health-display { font-size: 48px; }
+#score
+{
+  right: 100px;
+}
+#health
+{
+  left: 100px;
+}
+
+#threed 
+{
+  position: absolute;
+  bottom: 0px;
+  width: 960px;
+}

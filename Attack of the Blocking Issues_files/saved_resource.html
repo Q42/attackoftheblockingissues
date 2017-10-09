@@ -1,0 +1,168 @@
+
+<!-- saved from url=(0041)http://www.attackoftheblockingissu.es/bg/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>3d bg</title>
+		<meta name="author" content="marcel duin, marcel@q42.nl">
+		<meta name="company" content="http://www.Q42.nl/">
+		<script type="text/javascript" src="J3D.js"></script>
+		<script type="text/javascript" src="common.js"></script>
+		<script id="TunnelFilter" type="x-shader">
+			//#name Tunnel
+			//#description Tunnel shader
+			
+			//#include CommonInclude
+			
+			//#vertex
+			//#include VertexInclude
+			uniform float uSpeed;
+			varying vec4 vPosition;
+			varying vec3 vLight;
+			varying vec2 vTextureCoord;
+			varying vec3 vNormal;
+			
+			const float pi = 3.14159265358979323846264;
+			
+			void main(void) {
+				vTextureCoord = getTextureCoord(aTextureCoord);	
+				vNormal = nMatrix * aVertexNormal;
+				vPosition = mMatrix * vec4(aVertexPosition, 1.0);
+				gl_Position = pMatrix * vMatrix * vPosition;
+				
+				float fact = vPosition.z+1.;
+				
+				gl_Position.x+=(sin(uTime*uSpeed*0.43+vPosition.z/10.))*fact*0.15;
+				gl_Position.y+=(cos(uTime*0.05*uSpeed+vPosition.z/20.))*fact*0.25;
+			}
+			
+			//#fragment
+			//#include Lights
+			uniform vec4 color;
+			uniform sampler2D colorTexture;
+			uniform bool hasColorTexture;
+			uniform float specularIntensity;
+			uniform float shininess;
+			
+			varying vec4 vPosition;
+			varying vec3 vLight;
+			varying vec2 vTextureCoord;
+			varying vec3 vNormal;
+			
+			void main(void) {
+				vec4 tc = color;
+				if(hasColorTexture) tc*= texture2D(colorTexture, vTextureCoord);
+				vec4 col = vec4(tc.rgb * 1., tc.a);
+				
+				col.rgb*=1.+vPosition.z/15.;
+				gl_FragColor = col;
+			}
+		</script>
+		<script id="TVFilter" type="x-shader/x-filter">
+			//#name TV
+			uniform sampler2D uTexture;
+			uniform vec3 uColor;
+			uniform bool glasses;
+			uniform float fx1;
+			uniform float fx2;
+			
+			varying vec2 vTextureCoord;
+
+			float pi = 3.14159265358979323846264;
+			float rand(vec2 co,float t){return fract(sin(dot(co.xy ,vec2(12.9898,t+78.233))) * 43758.5453);}
+			float rand2(float t){return fract(sin(dot(vec2(t,t) ,vec2(12.9898,t+78.233))) * 43758.5453);}
+		
+			void main(void) {
+				vec2 u = vTextureCoord;
+				
+				float dx=abs((u.x-.5)*2.);
+				float dx2=((u.x-.5)*2.);
+
+				vec3 col = vec3(1.0,1.0,1.0);
+				
+				vec2 p = vec2(u.x,-u.y);
+				vec2 z = -1.0+2.0*u;
+				bool tv=true;
+				float time = uTime;
+				float ra = rand(z,time/100.0);
+				float cw = sin(time*2.5)*0.01+0.2;
+				vec2 dp = u;
+				float o = 1.0;
+				float ao = 0.0;
+				float vo = sin(dp.y*900.0+time*-20.0);
+				float vo2 = cos(dp.y*50.0+time*-5.0);
+				dp+=0.999+(vo*0.0005)-0.99995+(vo2*0.00005);
+				ao+=vo*0.01+vo2*0.008;
+				dp*=0.999+(ra*0.002);
+				o-=ra*0.2;
+				col.x*=1.0+abs(vo2)*0.02;
+				col.y*=1.0+vo2*0.01;
+				col *= texture2D(uTexture,dp).xyz;
+				
+				col.rgb+=uColor;
+				
+				gl_FragColor = vec4(col*o+ao,1.0);
+				
+				if(glasses){
+					float dfc=length((u-.5)*2.);
+					float tr=.04*abs(dx2)*(dfc/1.57);
+					float l = (gl_FragColor.r+gl_FragColor.g+gl_FragColor.b)/3.;
+					float g = texture2D(uTexture,vec2(u.x-tr,u.y)).g;
+					float r = texture2D(uTexture,vec2(u.x+tr,u.y)).r;
+					gl_FragColor = vec4(r,g,gl_FragColor.b,1.);
+				}
+				
+				gl_FragColor.rgb+=fx1;
+				gl_FragColor.r+=fx2;
+				
+			}
+		
+		</script>
+		<script id="particleShader" type="x-shader"> 
+			//#name Stars
+			//#include CommonInclude
+			
+			//#vertex
+			//#include VertexInclude
+			varying vec4 vColor;
+			varying float eyeDist;
+			uniform float speed;
+			
+			void main(void) {
+				vec4 worldPos = mMatrix * vec4(aVertexPosition, 1.0);
+				
+				vColor = aVertexColor;
+				eyeDist = clamp( distance( uEyePosition, worldPos.xyz ) / 300.0, 0.0, 1.0);
+				
+				gl_Position = pMatrix * vMatrix * worldPos;
+
+				vec4 vPosition = mMatrix * vec4(aVertexPosition, 1.0);
+				float fact = vPosition.z+1.;
+
+				gl_Position.x+=(sin(uTime*speed*0.5+vPosition.z/118.))*fact*0.25;
+				gl_Position.y+=(cos(uTime*0.05*speed+vPosition.z/200.))*fact*0.15;
+
+				gl_PointSize = 0.0001 * (1.0 - eyeDist);
+			}
+			
+			//#fragment
+			uniform vec4 uColor;
+			
+			varying vec4 vColor;
+			varying float eyeDist;
+			
+			void main(void) {
+				gl_FragColor = vec4( uColor.rgb * (1.0 - eyeDist) * vColor.rgb, 0 );
+			}
+		</script>
+		<script type="text/javascript" src="tunnel.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<table id="debug">
+			<tbody><tr>
+				<th>fps</th>
+				<td id="_fps"></td>
+			</tr>
+		</tbody></table>
+	
+
+<canvas width="640" height="659" style="width: 100%; height: 100%; "></canvas></body></html>
